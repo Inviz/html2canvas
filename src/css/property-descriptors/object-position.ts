@@ -10,7 +10,6 @@ export const objectPosition: IPropertyListDescriptor<ObjectPosition> = {
     type: PropertyDescriptorParsingType.LIST,
     prefix: false,
     parse: (_context: Context, tokens: CSSValue[]): ObjectPosition => {
-        debugger
         return parseFunctionArgs(tokens)
             .map((values: CSSValue[]) => values.filter(isLengthPercentage))
             .map(parseLengthPercentageTuple)[0];

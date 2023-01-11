@@ -1,7 +1,7 @@
 import {Bounds} from '../css/layout/bounds';
 import {OBJECT_FIT} from '../css/property-descriptors/object-fit';
 import {ObjectPosition} from '../css/property-descriptors/object-position';
-import {getAbsoluteValueForTuple} from '../css/types/length-percentage';
+import {getAbsoluteValue} from '../css/types/length-percentage';
 
 export const calculateObjectFitBounds = (
     objectFit: OBJECT_FIT,
@@ -14,8 +14,8 @@ export const calculateObjectFitBounds = (
     const naturalRatio = naturalWidth / naturalHeight;
     const clientRatio = clientWidth / clientHeight;
 
-    // 'object-position' is not currently supported, so use default value of 50% 50%.
-    const position = getAbsoluteValueForTuple(objectPosition, naturalWidth - clientWidth, naturalHeight - clientHeight);
+    const objectPositionX = getAbsoluteValue(objectPosition[0], 1);
+    const objectPositionY = getAbsoluteValue(objectPosition[1] || objectPosition[0], 1);
 
     let srcX: number,
         srcY: number,
@@ -44,13 +44,13 @@ export const calculateObjectFitBounds = (
                 destY = 0;
                 destHeight = clientHeight;
                 destWidth = destHeight * naturalRatio;
-                destX = position[0];
+                destX = (clientWidth - destWidth) * objectPositionX;
             } else {
                 // snap to left/right
                 destX = 0;
                 destWidth = clientWidth;
                 destHeight = destWidth / naturalRatio;
-                destY = position[1];
+                destY = (clientHeight - destHeight) * objectPositionY;
             }
             break;
 
@@ -64,13 +64,13 @@ export const calculateObjectFitBounds = (
                 srcX = 0;
                 srcWidth = naturalWidth;
                 srcHeight = clientHeight * (naturalWidth / clientWidth);
-                srcY = position[1];
+                srcY = (naturalHeight - srcHeight) * objectPositionY;
             } else {
                 // fill top/bottom
                 srcY = 0;
                 srcHeight = naturalHeight;
                 srcWidth = clientWidth * (naturalHeight / clientHeight);
-                srcX = position[0];
+                srcX = (naturalWidth - srcWidth) * objectPositionX;
             }
             break;
 
@@ -78,10 +78,10 @@ export const calculateObjectFitBounds = (
             if (naturalWidth < clientWidth) {
                 srcX = 0;
                 srcWidth = naturalWidth;
-                destX = position[0];
+                destX = (clientWidth - naturalWidth) * objectPositionX;
                 destWidth = naturalWidth;
             } else {
-                srcX = position[0];
+                srcX = (naturalWidth - clientWidth) * objectPositionX;
                 srcWidth = clientWidth;
                 destX = 0;
                 destWidth = clientWidth;
@@ -89,10 +89,10 @@ export const calculateObjectFitBounds = (
             if (naturalHeight < clientHeight) {
                 srcY = 0;
                 srcHeight = naturalHeight;
-                destY = position[1];
+                destY = (clientHeight - naturalHeight) * objectPositionY;
                 destHeight = naturalHeight;
             } else {
-                srcY = position[1];
+                srcY =  (naturalHeight - clientHeight) * objectPositionY;
                 srcHeight = clientHeight;
                 destY = 0;
                 destHeight = clientHeight;
