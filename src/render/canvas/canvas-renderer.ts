@@ -277,6 +277,7 @@ export class CanvasRenderer extends Renderer {
             this.path(path);
             const {src, dest} = calculateObjectFitBounds(
                 container.styles.objectFit,
+                container.styles.objectPosition,
                 container.intrinsicWidth,
                 container.intrinsicHeight,
                 box.width,
